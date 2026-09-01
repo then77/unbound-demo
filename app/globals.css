@@ -1,8 +1,9 @@
 @import "tailwindcss";
+@import "@liveblocks/react-ui/styles.css";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #0a0a0f;
+  --foreground: #ededed;
 }
 
 @theme inline {
@@ -12,15 +13,71 @@
   --font-mono: var(--font-geist-mono);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
-
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-sans), system-ui, sans-serif;
+}
+
+/* ---- Liveblocks theme overrides for dark mode ---- */
+.lb-root {
+  --lb-accent: #7c3aed;
+  --lb-accent-foreground: #ffffff;
+  --lb-background: transparent;
+  --lb-foreground: #e4e4e7;
+  --lb-muted: rgba(255, 255, 255, 0.05);
+  --lb-muted-foreground: #a1a1aa;
+  --lb-border: rgba(255, 255, 255, 0.08);
+  --lb-radius: 0.75rem;
+}
+
+.lb-thread {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 1rem;
+  padding: 1rem;
+}
+
+.lb-composer {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 1rem;
+}
+
+.lb-composer:focus-within {
+  border-color: rgba(124, 58, 237, 0.5);
+  box-shadow: 0 0 0 2px rgba(124, 58, 237, 0.15);
+}
+
+.lb-comment-body {
+  color: #d4d4d8;
+}
+
+.lb-composer-editor {
+  color: #e4e4e7;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+#liveblocks-badge {
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
 }
