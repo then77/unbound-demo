@@ -2,62 +2,99 @@
 @import "@liveblocks/react-ui/styles.css";
 
 :root {
-  --background: #0a0a0f;
-  --foreground: #ededed;
+  --background: #0d0c13;
+  --foreground: #f0f0f0;
+  --primary: #31257e;
+  --primary-foreground: #9b90df;
+  --primary-background: #19133f;
+  --success: #178c46;
+  --success-foreground: #73e8a2;
+  --success-background: #08391c;
+  --warning: #bf862a;
+  --warning-foreground: #edd4bb;
+  --warning-background: #32230b;
+  --danger: #9f2025;
+  --card: #0e0e17;
+  --muted: #282828;
+  --muted-foreground: #a0a0a0;
+  --border: #2a2638;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary-background: var(--primary-background);
+  --color-success: var(--success);
+  --color-success-foreground: var(--success-foreground);
+  --color-success-background: var(--success-background);
+  --color-warning: var(--warning);
+  --color-warning-foreground: var(--warning-foreground);
+  --color-warning-background: var(--warning-background);
+  --color-danger: var(--danger);
+  --color-card: var(--card);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-border: var(--border);
+  --font-sans: var(--font-jakarta);
   --font-mono: var(--font-geist-mono);
 }
 
-body {
+html {
+  min-height: 100%;
   background: var(--background);
   color: var(--foreground);
-  font-family: var(--font-sans), system-ui, sans-serif;
+  scroll-behavior: smooth;
 }
 
-/* ---- Liveblocks theme overrides for dark mode ---- */
+body {
+  min-height: 100%;
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-sans), ui-sans-serif, system-ui, sans-serif;
+}
+
+button,
+a {
+  -webkit-tap-highlight-color: transparent;
+}
+
 .lb-root {
-  --lb-accent: #7c3aed;
-  --lb-accent-foreground: #ffffff;
-  --lb-background: transparent;
-  --lb-foreground: #e4e4e7;
-  --lb-muted: rgba(255, 255, 255, 0.05);
-  --lb-muted-foreground: #a1a1aa;
-  --lb-border: rgba(255, 255, 255, 0.08);
-  --lb-radius: 0.75rem;
+  --lb-accent: var(--primary-foreground);
+  --lb-accent-foreground: var(--foreground);
+  --lb-background: var(--card);
+  --lb-foreground: var(--foreground);
+  --lb-muted: color-mix(in srgb, var(--muted) 55%, transparent);
+  --lb-muted-foreground: var(--muted-foreground);
+  --lb-border: var(--border);
+  --lb-radius: 0.625rem;
+  font-family: var(--font-sans), ui-sans-serif, system-ui, sans-serif;
 }
 
 .lb-thread {
-  background: rgba(255, 255, 255, 0.03);
-  border: 1px solid rgba(255, 255, 255, 0.06);
-  border-radius: 1rem;
-  padding: 1rem;
+  border: 1px solid var(--border);
+  background: var(--background);
+  border-radius: 0.75rem;
 }
 
 .lb-composer {
-  background: rgba(255, 255, 255, 0.03);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 1rem;
+  border: 1px solid var(--border);
+  border-radius: 0.75rem;
+  background: var(--background);
+  box-shadow: none;
 }
 
 .lb-composer:focus-within {
-  border-color: rgba(124, 58, 237, 0.5);
-  box-shadow: 0 0 0 2px rgba(124, 58, 237, 0.15);
+  border-color: var(--primary-foreground);
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--primary-foreground) 25%, transparent);
 }
 
-.lb-comment-body {
-  color: #d4d4d8;
-}
-
+.lb-comment-body,
 .lb-composer-editor {
-  color: #e4e4e7;
+  color: var(--foreground);
 }
 
-/* Scrollbar */
 ::-webkit-scrollbar {
   width: 6px;
 }
@@ -67,17 +104,52 @@ body {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.1);
-  border-radius: 3px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: rgba(255, 255, 255, 0.2);
+  border-radius: 999px;
+  background: var(--muted);
 }
 
 #liveblocks-badge {
   display: none !important;
-  visibility: hidden !important;
-  opacity: 0 !important;
-  pointer-events: none !important;
+}
+
+@layer utilities {
+  .button-shimmer,
+  .button-shimmer-hover:hover {
+    background-image: repeating-linear-gradient(
+      90deg,
+      transparent 0%,
+      rgb(255 255 255 / 3%) 20%,
+      rgb(255 255 255 / 15%) 50%,
+      rgb(255 255 255 / 3%) 80%,
+      transparent 100%
+    );
+    background-position: 133.333333% 0;
+    background-size: 400% 100%;
+    background-repeat: repeat-x;
+    animation: button-shimmer 2s linear infinite;
+  }
+}
+
+@keyframes button-shimmer {
+  from {
+    background-position: 133.333333% 0;
+  }
+
+  to {
+    background-position: 0 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }

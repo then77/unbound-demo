@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Geist_Mono, Plus_Jakarta_Sans } from "next/font/google";
 import "./globals.css";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+const jakarta = Plus_Jakarta_Sans({
+  variable: "--font-jakarta",
   subsets: ["latin"],
 });
 
@@ -13,24 +13,18 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Unbound Demo · OIDC Auth + Liveblocks Chat",
+  title: {
+    default: "Unbound Demo",
+    template: "%s",
+  },
   description:
-    "Standalone demo showcasing Unbound OIDC login, server-side auth, profile rendering, and real-time Liveblocks threaded chat.",
+    "A quick AI-assisted demo of Unbound OIDC authentication and Liveblocks chat.",
 };
 
-export default function RootLayout({
-  children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html
-      lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased dark`}
-    >
-      <body className="min-h-full flex flex-col bg-[#0a0a0f] text-white">
-        {children}
-      </body>
+    <html lang="en" className={`${jakarta.variable} ${geistMono.variable}`}>
+      <body>{children}</body>
     </html>
   );
 }

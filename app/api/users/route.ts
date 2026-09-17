@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from "next/server";
 import { pool } from "@/lib/db";
 import { getServerSession } from "@/lib/server-session";
 
+const MAX_USER_IDS = 100;
+
 export async function POST(req: NextRequest) {
   try {
     const session = await getServerSession();
@@ -13,20 +15,37 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const { ids } = await req.json();
-    if (!Array.isArray(ids) || ids.length === 0) {
+    const body: unknown = await req.json();
+    const ids =
+      typeof body === "object" && body !== null && "ids" in body
+        ? body.ids
+        : null;
+
+    if (!Array.isArray(ids)) {
+      return NextResponse.json({ error: "Invalid user IDs" }, { status: 400 });
+    }
+
+    if (ids.length === 0) {
       return NextResponse.json([]);
     }
 
-    // Query Better Auth user table
-    const placeholders = ids.map((_: string, i: number) => `$${i + 1}`).join(", ");
+    if (
+      ids.length > MAX_USER_IDS ||
+      !ids.every((id): id is string => typeof id === "string" && id.length > 0)
+    ) {
+      return NextResponse.json({ error: "Invalid user IDs" }, { status: 400 });
+    }
+
+    const placeholders = ids.map((_, index) => `$${index + 1}`).join(", ");
     const result = await pool.query(
       `SELECT id, name, email, image FROM "user" WHERE id IN (${placeholders})`,
       ids
     );
 
-    // Build a map for quick lookup
-    const userMap = new Map<string, { name: string; avatar: string; email: string }>();
+    const userMap = new Map<
+      string,
+      { name: string; avatar: string; email: string }
+    >();
     for (const row of result.rows) {
       userMap.set(row.id, {
         name: row.name || (row.email ? row.email.split("@")[0] : "Unbound User"),
@@ -35,8 +54,7 @@ export async function POST(req: NextRequest) {
       });
     }
 
-    // Return in same order as requested userIds
-    const users = ids.map((id: string) =>
+    const users = ids.map((id) =>
       userMap.get(id) || { name: id, avatar: "", email: "" }
     );
 

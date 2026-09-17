@@ -7,18 +7,13 @@ function required(key: string): string {
 }
 
 export const env = {
-  get APP_ORIGIN() {
-    return required("NEXT_PUBLIC_APP_ORIGIN");
-  },
   get BETTER_AUTH_URL() {
     return required("BETTER_AUTH_URL");
   },
   get BETTER_AUTH_SECRET() {
     return required("BETTER_AUTH_SECRET");
   },
-  get UNBOUND_OIDC_ISSUER() {
-    return required("UNBOUND_OIDC_ISSUER");
-  },
+
   get UNBOUND_OIDC_DISCOVERY_URL() {
     return required("UNBOUND_OIDC_DISCOVERY_URL");
   },

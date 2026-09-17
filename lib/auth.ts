@@ -1,12 +1,12 @@
 import { betterAuth } from "better-auth";
-import { Pool } from "@neondatabase/serverless";
 import { env } from "./env";
+import { pool } from "./db";
 import { genericOAuth } from "better-auth/plugins";
 
 export const auth = betterAuth({
   baseURL: env.BETTER_AUTH_URL,
   secret: env.BETTER_AUTH_SECRET,
-  database: new Pool({ connectionString: env.DATABASE_URL }),
+  database: pool,
   plugins: [
     genericOAuth({
       config: [

@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { liveblocks } from "@/lib/liveblocks";
 import { getServerSession } from "@/lib/server-session";
+import { env } from "@/lib/env";
 
 export async function POST(req: Request) {
   try {
@@ -19,7 +20,15 @@ export async function POST(req: Request) {
       user.name ||
       (user.email ? user.email.split("@")[0] : "Unbound User");
 
-    const { room } = await req.json();
+    const body: unknown = await req.json();
+    const room =
+      typeof body === "object" && body !== null && "room" in body
+        ? body.room
+        : null;
+
+    if (room !== env.LIVEBLOCKS_ROOM_ID) {
+      return NextResponse.json({ error: "Invalid room" }, { status: 403 });
+    }
 
     const liveblocksSession = liveblocks.prepareSession(
       user.id,
@@ -32,16 +41,11 @@ export async function POST(req: Request) {
       }
     );
 
-    // grant access to this room
-    liveblocksSession.allow(
-      room,
-      liveblocksSession.FULL_ACCESS
-    );
+    liveblocksSession.allow(room, liveblocksSession.FULL_ACCESS);
 
-    const { status, body } =
-      await liveblocksSession.authorize();
+    const { status, body: responseBody } = await liveblocksSession.authorize();
 
-    return new NextResponse(body, { status });
+    return new NextResponse(responseBody, { status });
   } catch (error) {
     console.error("Liveblocks auth error:", error);
 
