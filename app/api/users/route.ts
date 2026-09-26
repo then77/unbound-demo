@@ -4,6 +4,21 @@ import { getServerSession } from "@/lib/server-session";
 
 const MAX_USER_IDS = 100;
 
+function obfuscateEmail(email: string) {
+  const atIndex = email.lastIndexOf("@");
+
+  if (atIndex < 1) {
+    return "";
+  }
+
+  const localPart = email.slice(0, atIndex);
+  const domain = email.slice(atIndex);
+  const visiblePrefix = localPart.slice(0, 2);
+  const hiddenLength = Math.max(localPart.length - visiblePrefix.length, 1);
+
+  return `${visiblePrefix}${"*".repeat(hiddenLength)}${domain}`;
+}
+
 export async function POST(req: NextRequest) {
   try {
     const session = await getServerSession();
@@ -50,7 +65,10 @@ export async function POST(req: NextRequest) {
       userMap.set(row.id, {
         name: row.name || (row.email ? row.email.split("@")[0] : "Unbound User"),
         avatar: row.image || "",
-        email: row.email || "",
+        email:
+          row.id === session.user.id
+            ? row.email || ""
+            : obfuscateEmail(row.email || ""),
       });
     }
 
